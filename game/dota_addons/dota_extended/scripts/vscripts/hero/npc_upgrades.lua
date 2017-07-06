@@ -53,10 +53,13 @@ function TowerUpgrade( keys )
 	local base_health_per_tier = ability:GetLevelSpecialValueFor("base_health_per_tier", ability_level) * TOWER_POWER_FACTOR
 
 	-- Calculate tower tier
-	local tower_tier_multiplier = 0
-	if string.find(caster:GetUnitName(), "tower1") then
-		return nil
-	elseif string.find(caster:GetUnitName(), "tower2") then
+	--	Arkatakor
+	--local tower_tier_multiplier = 0
+	local tower_tier_multiplier = 1
+	--	Arkatakor
+	--if string.find(caster:GetUnitName(), "tower1") then	
+	--	return nil
+	if string.find(caster:GetUnitName(), "tower2") then
 		tower_tier_multiplier = 1
 	elseif string.find(caster:GetUnitName(), "tower3") then
 		tower_tier_multiplier = 2
