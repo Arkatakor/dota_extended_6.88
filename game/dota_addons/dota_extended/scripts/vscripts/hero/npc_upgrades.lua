@@ -49,6 +49,8 @@ function TowerUpgrade( keys )
 	local ability_level = ability:GetLevel() - 1
 	local modifier_buffs = keys.modifier_buffs
 
+	print( "calling TowerUpgrade" )
+	
 	-- Parameters
 	local base_health_per_tier = ability:GetLevelSpecialValueFor("base_health_per_tier", ability_level) * TOWER_POWER_FACTOR
 
