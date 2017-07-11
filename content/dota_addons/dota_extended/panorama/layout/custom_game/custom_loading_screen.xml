@@ -112,34 +112,34 @@
 				</Panel>
 			</Panel>
 
-			<Panel id="community_stuff_container" >
+			<!-- <Panel id="community_stuff_container" > -->
 
-				<Button id="show_community_panel_button" onactivate="ShowCommunityButton();" >
-					<Label id="show_community_panel_button_label" html="true" text="#extended_community_header" />
-				</Button>
+				<!-- <Button id="show_community_panel_button" onactivate="ShowCommunityButton();" > -->
+					<!-- <Label id="show_community_panel_button_label" html="true" text="#extended_community_header" /> -->
+				<!-- </Button> -->
 
-				<Panel id="CommunityPanel">
+				<!-- <Panel id="CommunityPanel"> -->
 				
-					<Label id="community_description" class="CommunityText" html="true" text="#extended_community_description" />
-					<Label id="community_post_description_01" class="CommunityText" html="true" text="#community_post_description_01"/>
+					<!-- <Label id="community_description" class="CommunityText" html="true" text="#extended_community_description" /> -->
+					<!-- <Label id="community_post_description_01" class="CommunityText" html="true" text="#community_post_description_01"/> -->
 
-					<Button id="community_discord_header" class="CommunityImg" onactivate="DOTADisplayURL('http://tinyurl.com/extended-discord');" >
-						<Image src="file://{images}/custom_game/loading_screen/community_discord_header.png" />
-					</Button>
-					<Label id="community_discord_description" class="CommunityText" html="true" text="#community_discord_description"/>
+					<!-- <Button id="community_discord_header" class="CommunityImg" onactivate="DOTADisplayURL('http://tinyurl.com/extended-discord');" > -->
+						<!-- <Image src="file://{images}/custom_game/loading_screen/community_discord_header.png" /> -->
+					<!-- </Button> -->
+					<!-- <Label id="community_discord_description" class="CommunityText" html="true" text="#community_discord_description"/> -->
 
-					<Button id="community_chinese_blog_header" class="CommunityImg" onactivate="DOTADisplayURL('http://www.bilibiliduang.cn/extended');" >
-						<Image src="file://{images}/custom_game/loading_screen/community_chinese_blog.png" />
-					</Button>
-					<Label id="community_chinese_blog_description_01" class="CommunityText" html="true" text="(this space is for the chinese community)"/>
-					<Label id="community_chinese_blog_description_02" class="CommunityText" html="true" text="更新日志中文翻译请查看此页面! 全新的EXTENDED中文翻译已经添加，尽情享用吧！如果您发现了任何翻译的错误或有其他建议，可以访问EXTENDED的中文页面在任意文章下评论"/>
+					<!-- <Button id="community_chinese_blog_header" class="CommunityImg" onactivate="DOTADisplayURL('http://www.bilibiliduang.cn/extended');" > -->
+						<!-- <Image src="file://{images}/custom_game/loading_screen/community_chinese_blog.png" /> -->
+					<!-- </Button> -->
+					<!-- <Label id="community_chinese_blog_description_01" class="CommunityText" html="true" text="(this space is for the chinese community)"/> -->
+					<!-- <Label id="community_chinese_blog_description_02" class="CommunityText" html="true" text="更新日志中文翻译请查看此页面! 全新的EXTENDED中文翻译已经添加，尽情享用吧！如果您发现了任何翻译的错误或有其他建议，可以访问EXTENDED的中文页面在任意文章下评论"/> -->
 
-				</Panel>
+				<!-- </Panel> -->
 
-				<Panel id="TitlePanel">
-					<Image id="loading_screen_title" class="SeqImg" src="file://{images}/custom_game/loading_screen/loading_screen_title.png" />
-				</Panel>
-			</Panel>
+				<!-- <Panel id="TitlePanel"> -->
+					<!-- <Image id="loading_screen_title" class="SeqImg" src="file://{images}/custom_game/loading_screen/loading_screen_title.png" /> -->
+				<!-- </Panel> -->
+			<!-- </Panel> -->
 		</Panel>
 	</Panel>
 </root>
