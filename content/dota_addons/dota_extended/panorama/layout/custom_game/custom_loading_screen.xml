@@ -112,7 +112,7 @@
 				</Panel>
 			</Panel>
 
-			<Panel id="community_stuff_container" >
+			<!-- <Panel id="community_stuff_container" > -->
 
 				<!-- <Button id="show_community_panel_button" onactivate="ShowCommunityButton();" > -->
 					<!-- <Label id="show_community_panel_button_label" html="true" text="#extended_community_header" /> -->
@@ -136,10 +136,10 @@
 
 				<!-- </Panel> -->
 
-				<Panel id="TitlePanel">
-					<Image id="loading_screen_title" class="SeqImg" src="file://{images}/custom_game/loading_screen/loading_screen_title.png" />
-				</Panel>
-			</Panel>
+				<!-- <Panel id="TitlePanel"> -->
+					<!-- <Image id="loading_screen_title" class="SeqImg" src="file://{images}/custom_game/loading_screen/loading_screen_title.png" /> -->
+				<!-- </Panel> -->
+			<!-- </Panel> -->
 		</Panel>
 	</Panel>
 </root>
