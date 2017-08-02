@@ -1012,6 +1012,9 @@ function GameMode:OnAllPlayersLoaded()
 		elseif string.find(building_name, "tower") then
 			building:SetDayTimeVisionRange(1900)
 			building:SetNightTimeVisionRange(800)
+			building:AddAbility("extended_tower_buffs")
+			local tower_upgrade_ability = building:FindAbilityByName("extended_tower_buffs")
+			tower_upgrade_ability:SetLevel(1)			
 		end
 	end
 
