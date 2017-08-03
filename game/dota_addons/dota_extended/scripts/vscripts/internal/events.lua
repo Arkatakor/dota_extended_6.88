@@ -19,6 +19,10 @@ function GameMode:_OnNPCSpawned(keys)
 
 	if npc:IsRealHero() and npc.bFirstSpawned == nil then
 		npc.bFirstSpawned = true
+        if npc:GetUnitName() ~= "npc_dota_hero_wisp" then
+            PopulateHeroExtendedTalents(npc)
+            InitializeInnateAbilities(npc)
+        end
 		GameMode:OnHeroInGame(npc)
 	end
 end
@@ -56,18 +60,7 @@ function GameMode:_OnConnectFull(keys)
 	
 	-- Store player's player ID
 	local player_id = keys.PlayerID
-	local player_steam_id_64 = tostring(PlayerResource:GetSteamID(player_id))
-
-	-- If this is Baumi, end the game
-	if player_steam_id_64 == "76561198003571172" then
-		IS_BANNED_PLAYER = true
-		GameRules:SetGameWinner(DOTA_TEAM_GOODGUYS)
-		GameRules:SetHeroSelectionTime(1)
-		GameRules:SetPreGameTime(3)
-		GameRules:SetPostGameTime(2)
-		GameRules:SetCustomGameSetupAutoLaunchDelay(3)
-		GameRules:SetCustomGameSetupRemainingTime(0)
-	end
+	local player_steam_id_64 = tostring(PlayerResource:GetSteamID(player_id))	
 end
 
 -- This function is called once a player says something on any chat
@@ -118,6 +111,14 @@ function GameMode:OnPlayerChat(keys)
 	-- Check for Blink-Colorcode
 	local blink_command = false
 	for str in string.gmatch(text, "%S+") do
+		if str == "-rangeoff" then
+			caster.norange = true
+		end
+		
+		if str == "-rangeon" then
+			caster.norange = nil
+		end
+		
 		if str == "-blink" then
 			blink_command = true
 		elseif blink_command == false then
@@ -139,6 +140,7 @@ function GameMode:OnPlayerChat(keys)
 			break
 		end
 	end
+	
 	if blink_command == true then
 		caster.blinkcolor = Vector ( color[1], color[2], color[3])
 		return nil

@@ -1,4 +1,4 @@
-"Extended.SvenGreatCleave"
+"Extended.SvenGetsugaTensho"
 {
 	"operator_stacks"
 	{
@@ -14,8 +14,12 @@
 					{
 						"value"
 						{
-							"value0"	"sounds/hero/sven/warcry_signet.vsnd"
+							"value0"	"sounds/hero/sven/getsuga_tensho.vsnd"
 						}
+					}
+					"volume"            
+					{   
+						"value"     "3.00000"  
 					}
 					"memory_type"
 					{
@@ -26,7 +30,38 @@
 		}
 	}
 }
-
+"Extended.SvenShockWave"
+{
+	"operator_stacks"
+	{
+		"update_stack"
+		{
+			"reference_operator"
+			{
+				"operator"				"sos_reference_stack"
+				"reference_stack"		"dota_update_default"
+				"operator_variables"
+				{
+					"vsnd_files"
+					{
+						"value"
+						{
+							"value0"	"sounds/hero/sven/shock_wave.vsnd"
+						}
+					}
+					"volume"            
+					{   
+						"value"     "4.00000"  
+					}
+					"memory_type"
+					{
+						"value"			"0"
+					}
+				}
+			}
+		}
+	}
+}
 "Extended.SvenBeAMan"
 {
 	"operator_stacks"
@@ -254,6 +289,42 @@
 						"value"			"0"
 					}
 					"volume"			{   "value"     "2.50000"  }
+					"pitch_rand_min"	{   "value"     "-0.02000"  }
+					"pitch_rand_max"	{   "value"     "0.02000"  }
+					"pitch"				{   "value"     "1.000000"  }
+					"soundlevel"		{   "value"     "100.00000" }
+					"distance_max"		{   "value"     "1600.000"  }
+					"event_type"		{   "value"     "1.000000"  }
+				}
+			}
+		}
+	}
+}
+
+"Extended.StolenZaWarudo"
+{
+	"operator_stacks"
+	{
+		"update_stack"
+		{
+			"reference_operator"
+			{
+				"operator"				"sos_reference_stack"
+				"reference_stack"		"dota_update_default"
+				"operator_variables"
+				{
+					"vsnd_files"
+					{
+						"value"
+						{
+							"value0"	"sounds/hero/faceless_void/zawarudostolen.vsnd"
+						}
+					}
+					"memory_type"
+					{
+						"value"			"0"
+					}
+					"volume"			{   "value"     "3.50000"  }
 					"pitch_rand_min"	{   "value"     "-0.02000"  }
 					"pitch_rand_max"	{   "value"     "0.02000"  }
 					"pitch"				{   "value"     "1.000000"  }
@@ -1492,6 +1563,266 @@
 					"soundlevel"		{   "value"     "100.00000" }
 					"distance_max"		{   "value"     "1500.000"  }
 					"event_type"		{   "value"     "1.000000"  }
+				}
+			}
+		}
+	}
+}
+
+"Venomancer.Toxicity"
+{
+	"operator_stacks"
+	{
+		"update_stack"
+		{
+			"reference_operator"
+			{
+				"operator"				"sos_reference_stack"
+				"reference_stack"		"dota_update_default"
+				"operator_variables"
+				{
+					"vsnd_files"
+					{
+						"value"
+						{
+							"value0"	"sounds/hero/venomancer/Toxicity.vsnd"
+						}
+					}
+					"volume"            
+					{   
+						"value"     "3.00000"  
+					}
+					"memory_type"
+					{
+						"value"			"0"
+					}
+				}
+			}
+		}
+	}
+}
+
+"Extended.LionHexREEE"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_update_default"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                            "value0"    "sounds/hero/lion/LionHexREEEE.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "3.000000"  }
+                    "pitch_rand_min"    {   "value"     "-0.03000"  }
+                    "pitch_rand_max"    {   "value"     "0.030000"  }
+                    "pitch"             {   "value"     "1.000000"  }
+                    "soundlevel"        {   "value"     "100.00000" }
+                    "distance_max"      {   "value"     "1200.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                }
+            }
+        }
+    }
+}
+
+"Extended.CripplingFearKill"
+{
+	"operator_stacks"
+	{
+		"update_stack"
+		{
+			"reference_operator"
+			{
+				"operator"				"sos_reference_stack"
+				"reference_stack"		"dota_update_default"
+				"operator_variables"
+				{
+					"vsnd_files"
+					{
+						"value"
+						{
+							"value0"	"sounds/hero/night_stalker/CripplingFearKill.vsnd"
+						}
+					}
+					"volume"			{   "value"     "2.500000"  }
+					"pitch_rand_min"	{   "value"     "-0.03000"  }
+					"pitch_rand_max"	{   "value"     "0.030000"  }
+					"pitch"				{   "value"     "1.000000"  }
+					"soundlevel"		{   "value"     "100.00000" }
+					"distance_max"		{   "value"     "1500.000"  }
+					"event_type"		{   "value"     "1.000000"  }
+				}
+			}
+		}
+	}
+}
+
+"Extended.LittlePiggyWhy"
+{
+	"operator_stacks"
+	{
+		"update_stack"
+		{
+			"reference_operator"
+			{
+				"operator"				"sos_reference_stack"
+				"reference_stack"		"dota_update_default"
+				"operator_variables"
+				{
+					"vsnd_files"
+					{
+						"value"
+						{
+							"value0"	"sounds/hero/techies/little_piggy_i_loveded_you.vsnd"
+						}
+					}
+					"volume"			{   "value"     "5.000000"  }
+					"pitch_rand_min"	{   "value"     "-0.03000"  }
+					"pitch_rand_max"	{   "value"     "0.030000"  }
+					"pitch"				{   "value"     "1.000000"  }
+					"soundlevel"		{   "value"     "100.00000" }
+					"distance_max"		{   "value"     "1500.000"  }
+					"event_type"		{   "value"     "1.000000"  }
+				}
+			}
+		}
+	}
+}
+
+"Extended.TrollAK47"
+{
+	"operator_stacks"
+	{
+		"update_stack"
+		{
+			"reference_operator"
+			{
+				"operator"				"sos_reference_stack"
+				"reference_stack"		"dota_update_default"
+				"operator_variables"
+				{
+					"vsnd_files"
+					{
+						"value"
+						{
+							"value0"	"sounds/hero/troll_warlord/ak47_for_everyone.vsnd"
+						}
+					}
+					"volume"			{   "value"     "5.000000"  }
+					"pitch_rand_min"	{   "value"     "-0.03000"  }
+					"pitch_rand_max"	{   "value"     "0.030000"  }
+					"pitch"				{   "value"     "1.000000"  }
+					"soundlevel"		{   "value"     "100.00000" }
+					"distance_max"		{   "value"     "1500.000"  }
+					"event_type"		{   "value"     "1.000000"  }
+				}
+			}
+		}
+	}
+}
+
+"Extended.TrollAK47.Team"
+{
+	"operator_stacks"
+	{
+		"update_stack"
+		{
+			"reference_operator"
+			{
+				"operator"				"sos_reference_stack"
+				"reference_stack"		"dota_update_default"
+				"operator_variables"
+				{
+					"vsnd_files"
+					{
+						"value"
+						{
+							"value0"	"sounds/hero/troll_warlord/ak47_for_everyone.vsnd"
+						}
+					}
+					"volume"			{   "value"     "5.000000"  }
+					"pitch_rand_min"	{   "value"     "-0.03000"  }
+					"pitch_rand_max"	{   "value"     "0.030000"  }
+					"pitch"				{   "value"     "1.000000"  }
+					"soundlevel"		{   "value"     "100.00000" }
+					"distance_max"		{   "value"     "30000.000" }
+					"volume_falloff_max"{	"value"		"30000.000"	}
+					"event_type"		{   "value"     "1.000000"  }
+					"spread_radius"		{	"value"		"1200.0000"	}
+				}
+			}
+		}
+	}
+}
+
+"Extended.WitchDoctorDispel"
+{
+	"operator_stacks"
+	{
+		"update_stack"
+		{
+			"reference_operator"
+			{
+				"operator"				"sos_reference_stack"
+				"reference_stack"		"dota_update_default"
+				"operator_variables"
+				{
+					"vsnd_files"
+					{
+						"value"
+						{
+							"value0"	"sounds/hero/witch_doctor/dispel.vsnd"
+						}
+					}
+					"volume"			{   "value"     "1.000000"  }
+					"pitch_rand_min"	{   "value"     "-0.03000"  }
+					"pitch_rand_max"	{   "value"     "0.030000"  }
+					"pitch"				{   "value"     "1.000000"  }
+					"soundlevel"		{   "value"     "100.00000" }
+					"distance_max"		{   "value"     "1500.000"  }
+					"event_type"		{   "value"     "1.000000"  }
+				}
+			}
+		}
+	}
+}
+
+"Extended.WitchDoctorSingsASong"
+{
+	"operator_stacks"
+	{
+		"update_stack"
+		{
+			"reference_operator"
+			{
+				"operator"				"sos_reference_stack"
+				"reference_stack"		"dota_update_default"
+				"operator_variables"
+				{
+					"vsnd_files"
+					{
+						"value"
+						{
+							"value0"	"sounds/hero/witch_doctor/feel_it_in_your_bones.vsnd"
+						}
+					}
+					"volume"            
+					{   
+						"value"     "3.00000"  
+					}
+					"memory_type"
+					{
+						"value"			"0"
+					}
 				}
 			}
 		}

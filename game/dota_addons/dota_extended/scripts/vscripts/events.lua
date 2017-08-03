@@ -172,7 +172,7 @@ function GameMode:OnNPCSpawned(keys)
 
 		-- List of modifiers which carry over from the main hero to the clone
 		local clone_shared_buffs = {
-			"modifier_extended_unlimited_level_powerup",
+			"modifier_extended_war_veteran",
 			"modifier_extended_moon_shard_stacks_dummy",
 			"modifier_extended_moon_shard_consume_1",
 			"modifier_extended_moon_shard_consume_2",
@@ -357,6 +357,34 @@ function GameMode:OnPlayerReconnect(keys)
 				print("updating player "..player_id.."'s pick screen state")
 				local pick_state = HeroSelection.playerPickState[player_id].pick_state
 				local repick_state = HeroSelection.playerPickState[player_id].repick_state
+
+                local data = {
+                    PlayerID = player_id,
+                    PlayerPicks = HeroSelection.playerPicks,
+                    pickState = pick_state,
+                    repickState = repick_state
+                }
+
+                if EXTENDED_HERO_PICK_RULE == 0 then
+                    data.PickedHeroes = {}
+                    -- Set as all of the heroes that were selected
+                    for _,v in pairs(HeroSelection.radiantPicks) do
+                        table.insert(data.PickedHeroes, v)
+                    end
+                    for _,v in pairs(HeroSelection.direPicks) do
+                        table.insert(data.PickedHeroes, v)
+                    end
+                elseif EXTENDED_HERO_PICK_RULE == 1 then
+                    -- Set as the team's pick to prevent same hero on the same team
+                    if PlayerResource:GetTeam(player_id) == DOTA_TEAM_GOODGUYS then
+                        data.PickedHeroes = HeroSelection.radiantPicks
+                    else
+                        data.PickedHeroes = HeroSelection.direPicks
+                    end
+                else
+                    data.PickedHeroes = {} --Set as empty, to allow all heroes to be selected
+                end
+
 				if PlayerResource:GetTeam(player_id) == DOTA_TEAM_GOODGUYS then
 					CustomGameEventManager:Send_ServerToAllClients("player_reconnected", {PlayerID = player_id, PickedHeroes = HeroSelection.radiantPicks, PlayerPicks = HeroSelection.playerPicks, pickState = pick_state, repickState = repick_state})
 				else
@@ -407,8 +435,20 @@ function GameMode:OnAbilityUsed(keys)
 	DebugPrint('[BAREBONES] AbilityUsed')
 	DebugPrintTable(keys)
 
-	local player = PlayerResource:GetPlayer(keys.PlayerID)
+	local player = keys.PlayerID
 	local abilityname = keys.abilityname
+	if not abilityname then return end
+	
+	local hero = PlayerResource:GetSelectedHeroEntity(player)
+	if not hero then return end
+	
+	local abilityUsed = hero:FindAbilityByName(abilityname)
+	if not abilityUsed then return end
+	
+	if abilityname == "rubick_spell_steal" then
+		local target = abilityUsed:GetCursorTarget()
+		hero.spellStealTarget = target
+	end
 
 	-------------------------------------------------------------------------------------------------
 	-- EXTENDED: Remote Mines adjustment
@@ -480,6 +520,17 @@ function GameMode:OnPlayerLearnedAbility( keys)
 
 	local player = EntIndexToHScript(keys.player)
 	local abilityname = keys.abilityname
+
+	-- If it the ability is Homing Missiles, wait a bit and set count to 1	
+	if abilityname == "gyrocopter_homing_missile" then
+		Timers:CreateTimer(1, function()
+			-- Find homing missile modifier
+			local modifier_charges = player:GetAssignedHero():FindModifierByName("modifier_gyrocopter_homing_missile_charge_counter")
+			if modifier_charges then
+				modifier_charges:SetStackCount(3)
+			end
+		end)
+	end
 end
 
 -- A channelled ability finished by either completing or being interrupted
@@ -499,31 +550,23 @@ function GameMode:OnPlayerLevelUp(keys)
 	local hero_level = hero:GetLevel()
 
 	-------------------------------------------------------------------------------------------------
-	-- EXTENDED: Unlimited level logic
+	-- EXTENDED: Missing/Extra ability points correction
 	-------------------------------------------------------------------------------------------------
 
-	-- If the generic powerup isn't present, apply it
-	if hero_level > 25 then
-		local ability_powerup = hero:FindAbilityByName("extended_unlimited_level_powerup")
-		local is_this_hero_fucked_by_valve = false
-		local heroes_fucked_by_valve = {
-			"npc_dota_hero_rubick",
-			"npc_dota_hero_wisp",
-			"npc_dota_hero_invoker",
-			"npc_dota_hero_lina",
-			"npc_dota_hero_phoenix",
-			"npc_dota_hero_keeper_of_the_light"
-		}
-		for _, fucked_hero in pairs(heroes_fucked_by_valve) do
-			if fucked_hero == hero:GetUnitName() then
-				is_this_hero_fucked_by_valve = true
-				break
-			end
+	local missing_point_levels = {17, 19, 21, 22, 23, 24}
+	local extra_point_levels = {33, 34, 37, 38, 39}
+
+	-- Add missing point on the appropriate levels
+	for _, current_level in pairs(missing_point_levels) do
+		if hero_level == current_level then
+			hero:SetAbilityPoints(hero:GetAbilityPoints() + 1)
 		end
-		if (not ability_powerup) and (not is_this_hero_fucked_by_valve) then
-			hero:AddAbility("extended_unlimited_level_powerup")
-			ability_powerup = hero:FindAbilityByName("extended_unlimited_level_powerup")
-			ability_powerup:SetLevel(1)
+	end
+
+	-- Remove extra point on the appropriate levels
+	for _, current_level in pairs(extra_point_levels) do
+		if hero_level == current_level then
+			hero:SetAbilityPoints(hero:GetAbilityPoints() - 1)
 		end
 	end
 
@@ -767,41 +810,34 @@ function GameMode:OnEntityKilled( keys )
 	-------------------------------------------------------------------------------------------------
 	-- EXTENDED: Respawn timer setup
 	-------------------------------------------------------------------------------------------------
-	
-	if killed_unit:IsRealHero() and killed_unit:GetPlayerID() and PlayerResource:IsExtendedPlayer(killed_unit:GetPlayerID()) then
-		
+	if killed_unit:HasModifier("modifier_item_extended_aegis") then
+		killed_unit:SetTimeUntilRespawn(killed_unit:FindModifierByName("modifier_item_extended_aegis").reincarnate_time)
+	elseif killed_unit:HasModifier("modifier_extended_reincarnation") then
+		local wk_mod = killed_unit:FindModifierByName("modifier_extended_reincarnation")
+		local can_die = (wk_mod.can_die == false)
+		if can_die then
+			killed_unit:SetTimeUntilRespawn(killed_unit:FindModifierByName("modifier_extended_reincarnation").reincarnate_delay)
+		else
+			local hero_level = math.min(killed_unit:GetLevel(), 25)
+			local respawn_time = HERO_RESPAWN_TIME_PER_LEVEL[hero_level]
+			respawn_time = respawn_time + killed_unit:GetRespawnTimeModifier()
+			killed_unit:SetTimeUntilRespawn(respawn_time)
+		end
+	elseif killed_unit:IsRealHero() and killed_unit:GetPlayerID() and (PlayerResource:IsExtendedPlayer(killed_unit:GetPlayerID()) or GameRules:IsCheatMode()) then
 		-- Calculate base respawn timer, capped at 60 seconds
 		local hero_level = math.min(killed_unit:GetLevel(), 25)
 		local respawn_time = HERO_RESPAWN_TIME_PER_LEVEL[hero_level]
-
-		-- Calculate respawn timer reduction due to talents
-		local respawn_reduction_talents = {}
-		respawn_reduction_talents["special_bonus_respawn_reduction_15"] = 9
-		respawn_reduction_talents["special_bonus_respawn_reduction_20"] = 12
-		respawn_reduction_talents["special_bonus_respawn_reduction_25"] = 15
-		respawn_reduction_talents["special_bonus_respawn_reduction_30"] = 18
-		respawn_reduction_talents["special_bonus_respawn_reduction_35"] = 20
-		respawn_reduction_talents["special_bonus_respawn_reduction_40"] = 25
-		respawn_reduction_talents["special_bonus_respawn_reduction_50"] = 30
-		respawn_reduction_talents["special_bonus_respawn_reduction_60"] = 40
-
-		for talent_name,respawn_reduction_bonus in pairs(respawn_reduction_talents) do
-			if killed_unit:FindAbilityByName(talent_name) and killed_unit:FindAbilityByName(talent_name):GetLevel() > 0 then
-				respawn_time = respawn_time - respawn_reduction_bonus
-			end
-		end
+		-- Calculate respawn timer reduction due to talents and modifiers
+		respawn_time = respawn_time + killed_unit:GetRespawnTimeModifier()
 
 		-- Fetch decreased respawn timer due to Bloodstone charges
 		if killed_unit.bloodstone_respawn_reduction then
 			respawn_time = math.max( respawn_time - killed_unit.bloodstone_respawn_reduction, 0)
 		end
-
 		-- Multiply respawn timer by the lobby options
 		respawn_time = math.max( respawn_time * HERO_RESPAWN_TIME_MULTIPLIER * 0.01, 1)
-
 		-- Set up the respawn timer
 		killed_unit:SetTimeUntilRespawn(respawn_time)
-
 	end
 
 	-------------------------------------------------------------------------------------------------
@@ -824,14 +860,20 @@ function GameMode:OnEntityKilled( keys )
 		local buyback_cost = BUYBACK_BASE_COST + level_based_cost + game_time * BUYBACK_COST_PER_SECOND
 		buyback_cost = buyback_cost * (1 + CUSTOM_GOLD_BONUS * 0.01)
 
-		-- Update buyback cost
-		PlayerResource:SetCustomBuybackCost(player_id, buyback_cost)
-
 		-- Setup buyback cooldown
 		local buyback_cooldown = 0
 		if BUYBACK_COOLDOWN_ENABLED and game_time > BUYBACK_COOLDOWN_START_POINT then
 			buyback_cooldown = math.min(BUYBACK_COOLDOWN_GROW_FACTOR * (game_time - BUYBACK_COOLDOWN_START_POINT), BUYBACK_COOLDOWN_MAXIMUM)
 		end
+		
+		-- #7 Talent Vengeful Spirit - Decreased respawn time & cost
+		if killed_unit:HasTalent("special_bonus_extended_vengefulspirit_7") then
+			buyback_cost = buyback_cost * (1 - (killed_unit:FindSpecificTalentValue("special_bonus_extended_vengefulspirit_7", "buyback_cost_pct") / 100))
+			buyback_cooldown = buyback_cooldown * (1 - (killed_unit:FindSpecificTalentValue("special_bonus_extended_vengefulspirit_7", "buyback_cooldown_pct") / 100))
+		end
+		
+		-- Update buyback cost
+		PlayerResource:SetCustomBuybackCost(player_id, buyback_cost)
 		PlayerResource:SetCustomBuybackCooldown(player_id, buyback_cooldown)
 	end
 end

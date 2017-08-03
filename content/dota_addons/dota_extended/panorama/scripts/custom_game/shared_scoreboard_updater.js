@@ -33,12 +33,14 @@ function _ScoreboardUpdater_UpdatePlayerPanel( scoreboardConfig, playersContaine
 	var ultStateOrTime = PlayerUltimateStateOrTime_t.PLAYER_ULTIMATE_STATE_HIDDEN; // values > 0 mean on cooldown for that many seconds
 	var goldValue = -1;
 	var isTeammate = false;
+	var isSpectator = false;
 
 	var playerInfo = Game.GetPlayerInfo( playerId );
 	if ( playerInfo )
 	{
 		isTeammate = ( playerInfo.player_team_id == localPlayerTeamId );
-		if ( isTeammate )
+		isSpectator = Players.IsSpectator( Game.GetLocalPlayerID() );
+		if ( isTeammate || isSpectator )
 		{
 			ultStateOrTime = Game.GetPlayerUltimateStateOrTime( playerId );
 		}
@@ -46,6 +48,7 @@ function _ScoreboardUpdater_UpdatePlayerPanel( scoreboardConfig, playersContaine
 		
 		playerPanel.SetHasClass( "player_dead", ( playerInfo.player_respawn_seconds >= 0 ) );
 		playerPanel.SetHasClass( "local_player_teammate", isTeammate && ( playerId != Game.GetLocalPlayerID() ) );
+		playerPanel.SetHasClass( "spectator_view", isSpectator);
 
 		_ScoreboardUpdater_SetTextSafe( playerPanel, "RespawnTimer", ( playerInfo.player_respawn_seconds + 1 ) ); // value is rounded down so just add one for rounded-up
 		_ScoreboardUpdater_SetTextSafe( playerPanel, "PlayerName", playerInfo.player_name );
@@ -53,6 +56,31 @@ function _ScoreboardUpdater_UpdatePlayerPanel( scoreboardConfig, playersContaine
 		_ScoreboardUpdater_SetTextSafe( playerPanel, "Kills", playerInfo.player_kills );
 		_ScoreboardUpdater_SetTextSafe( playerPanel, "Deaths", playerInfo.player_deaths );
 		_ScoreboardUpdater_SetTextSafe( playerPanel, "Assists", playerInfo.player_assists );
+
+		var btnMuteVoice = playerPanel.FindChildInLayoutFile("BtnMuteVoice");
+		
+		if( btnMuteVoice )
+		{
+			btnMuteVoice.SetHasClass( "Activated", Game.IsPlayerMuted(playerId) );
+		}
+
+		var tableValue = CustomNetTables.GetTableValue( "shared_unit_control", Game.GetLocalPlayerID());
+		if ( tableValue && tableValue[playerId] != null){
+			var btnShareUnit = playerPanel.FindChildInLayoutFile("BtnShareUnit");
+			var btnShareHero = playerPanel.FindChildInLayoutFile("BtnShareHero");
+			var btnDisableHelp = playerPanel.FindChildInLayoutFile("BtnDisableHelp");
+
+			//bitmask; 1 shares heroes, 2 shares units, 4 disables help
+			if( btnShareUnit ){
+				btnShareUnit.SetHasClass( "Activated", ((tableValue[playerId] & 2) > 0) );
+			}
+			if( btnShareHero ){
+				btnShareHero.SetHasClass( "Activated", ((tableValue[playerId] & 1) > 0) );
+			}
+			if( btnDisableHelp ){
+				btnDisableHelp.SetHasClass( "Activated", ((tableValue[playerId] & 4) > 0) );
+			}
+		}
 
 		var playerPortrait = playerPanel.FindChildInLayoutFile( "HeroIcon" );
 		if ( playerPortrait )
@@ -119,7 +147,7 @@ function _ScoreboardUpdater_UpdatePlayerPanel( scoreboardConfig, playersContaine
 			{
 				var itemPanelName = "_dynamic_item_" + i;
 				var itemPanel = playerItemsContainer.FindChild( itemPanelName );
-				
+
 				var itemInfo = playerItems.inventory[i];
 
 				if ( itemPanel === null )
@@ -127,83 +155,22 @@ function _ScoreboardUpdater_UpdatePlayerPanel( scoreboardConfig, playersContaine
 					//Needs DOTAItemImage to be able to load from flash3 images (similar to those used for dota shop, hence reusing existing resources)
 					itemPanel = $.CreatePanel( "DOTAItemImage", playerItemsContainer, itemPanelName );
 					itemPanel.AddClass( "PlayerItem" );
-				}else{
-					itemPanel.RemoveClass( "RawImageBugFix" );
 				}
 
-				var itemImagePath = "";
 
 				if ( itemInfo )
 				{
-					if ( itemInfo.item_name.indexOf( "recipe" ) >= 0 )
-					{
-						itemImagePath = "file://{images}/items/recipe.png";
-					}
-					else
-					{
-						var item_image_name = itemInfo.item_name.replace( "item_", "" );
-						if ( item_image_name.indexOf( "extended" ) >= 0 )
-						{
-							//Some extended items have same base image
-							switch(item_image_name){
-								case "extended_dagon":
-								case "extended_dagon_2":
-								case "extended_dagon_3":
-								case "extended_dagon_4":
-								case "extended_dagon_5":
-								case "extended_force_staff":
-								case "extended_cyclone":
-								case "extended_ring_of_basilius":
-								case "extended_null_talisman":
-								case "extended_wraith_band":
-								case "extended_bracer":
-								case "extended_poor_mans_shield":
-								case "extended_pers":
-								case "extended_refresher":
-								case "extended_black_king_bar":
-								case "extended_blade_mail":
-								case "extended_hood_of_defiance":
-								case "extended_basher":
-								case "extended_manta":
-								case "extended_ethereal_blade":
-								case "extended_orb_of_venom":
-								case "extended_ring_of_aquila":
-									//Reference to base image
-									item_image_name = item_image_name.replace("extended_", "");
-									itemImagePath = "file://{images}/items/" + item_image_name + ".png";
-								break;
-								case "extended_power_treads_2":
-									//Reference to image that does not match with its name
-									itemImagePath = "raw://resource/flash3/images/items/custom/extended_power_threads.png";
-								break;
-								case "item_extended_shadow_blade":
-									//Reference to image that does not match with its name
-									itemImagePath = "raw://resource/flash3/images/items/custom/extended_invis_sword.png";
-								break;
-								default:
-									//Reference to custom image
-									itemImagePath = "raw://resource/flash3/images/items/custom/" + item_image_name + ".png";
-								break;
-							}
-
-							//Bug fix for flash image display
-							if(itemImagePath.indexOf("raw://") == 0){
-								itemPanel.AddClass( "RawImageBugFix" );
-							}
-						}
-						else
-						{
-							itemImagePath = "file://{images}/items/" + item_image_name + ".png";
-						}
-					}
+                    itemPanel.itemname = itemInfo.item_name;
 				}
-
-				itemPanel.SetImage( itemImagePath );
+                else
+                {
+                    itemPanel.itemname = "";
+                }
 			}
 		}
 	}
 
-	if ( isTeammate )
+	if ( isTeammate || isSpectator )
 	{
 		_ScoreboardUpdater_SetTextSafe( playerPanel, "TeammateGoldAmount", goldValue );
 	}

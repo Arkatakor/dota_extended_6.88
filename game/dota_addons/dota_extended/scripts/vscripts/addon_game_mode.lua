@@ -2,6 +2,7 @@
 
 require('statcollection/init')
 require('internal/util')
+require('internal/funcs')
 require('player_resource')
 require('extended')
 require('hero_selection')
@@ -24,15 +25,42 @@ function Precache( context )
 
 	-- Lua modifiers activation
 	LinkLuaModifier("modifier_extended_speed_limit_break", "modifier/modifier_extended_speed_limit_break.lua", LUA_MODIFIER_MOTION_NONE )
+	LinkLuaModifier("modifier_extended_contributor_statue", "modifier/modifier_extended_contributor_statue.lua", LUA_MODIFIER_MOTION_NONE )
 	LinkLuaModifier("modifier_extended_haste_rune_speed_limit_break", "modifier/modifier_extended_haste_rune_speed_limit_break.lua", LUA_MODIFIER_MOTION_NONE )
 	LinkLuaModifier("modifier_extended_haste_boots_speed_break", "modifier/modifier_extended_haste_boots_speed_break.lua", LUA_MODIFIER_MOTION_NONE )
 	LinkLuaModifier("modifier_extended_chronosphere_ally_slow", "modifier/modifier_extended_chronosphere_ally_slow.lua", LUA_MODIFIER_MOTION_NONE )
 	LinkLuaModifier("modifier_extended_prevent_actions_game_start", "modifier/modifier_extended_prevent_actions_game_start.lua", LUA_MODIFIER_MOTION_NONE )
 	LinkLuaModifier("modifier_extended_arena_passive_gold_thinker", "modifier/modifier_extended_arena_passive_gold_thinker.lua", LUA_MODIFIER_MOTION_NONE )
-	LinkLuaModifier("modifier_extended_frantic", "modifier/modifier_extended_frantic.lua", LUA_MODIFIER_MOTION_NONE )
+	LinkLuaModifier("modifier_extended_range_indicator", "modifier/modifier_extended_range_indicator.lua", LUA_MODIFIER_MOTION_NONE )
+	LinkLuaModifier("modifier_extended_war_veteran", "modifier/modifier_extended_war_veteran.lua", LUA_MODIFIER_MOTION_NONE )
 
 	-- Generic talent modifiers
 	LinkLuaModifier("modifier_extended_generic_talents_handler", "modifier/generic_talents/modifier_extended_generic_talents_handler.lua", LUA_MODIFIER_MOTION_NONE )
+    LinkLuaModifier("modifier_extended_generic_talent_damage", "modifier/generic_talents/modifier_extended_generic_talents.lua", LUA_MODIFIER_MOTION_NONE )
+    LinkLuaModifier("modifier_extended_generic_talent_all_stats", "modifier/generic_talents/modifier_extended_generic_talents.lua", LUA_MODIFIER_MOTION_NONE )
+    LinkLuaModifier("modifier_extended_generic_talent_strength", "modifier/generic_talents/modifier_extended_generic_talents.lua", LUA_MODIFIER_MOTION_NONE )
+    LinkLuaModifier("modifier_extended_generic_talent_agility", "modifier/generic_talents/modifier_extended_generic_talents.lua", LUA_MODIFIER_MOTION_NONE )
+    LinkLuaModifier("modifier_extended_generic_talent_intelligence", "modifier/generic_talents/modifier_extended_generic_talents.lua", LUA_MODIFIER_MOTION_NONE )
+    LinkLuaModifier("modifier_extended_generic_talent_armor", "modifier/generic_talents/modifier_extended_generic_talents.lua", LUA_MODIFIER_MOTION_NONE )
+    LinkLuaModifier("modifier_extended_generic_talent_magic_resistance", "modifier/generic_talents/modifier_extended_generic_talents.lua", LUA_MODIFIER_MOTION_NONE )
+    LinkLuaModifier("modifier_extended_generic_talent_evasion", "modifier/generic_talents/modifier_extended_generic_talents.lua", LUA_MODIFIER_MOTION_NONE )
+    LinkLuaModifier("modifier_extended_generic_talent_move_speed", "modifier/generic_talents/modifier_extended_generic_talents.lua", LUA_MODIFIER_MOTION_NONE )
+    LinkLuaModifier("modifier_extended_generic_talent_attack_speed", "modifier/generic_talents/modifier_extended_generic_talents.lua", LUA_MODIFIER_MOTION_NONE )
+    LinkLuaModifier("modifier_extended_generic_talent_hp", "modifier/generic_talents/modifier_extended_generic_talents.lua", LUA_MODIFIER_MOTION_NONE )
+    LinkLuaModifier("modifier_extended_generic_talent_hp_regen", "modifier/generic_talents/modifier_extended_generic_talents.lua", LUA_MODIFIER_MOTION_NONE )
+    LinkLuaModifier("modifier_extended_generic_talent_mp", "modifier/generic_talents/modifier_extended_generic_talents.lua", LUA_MODIFIER_MOTION_NONE )
+    LinkLuaModifier("modifier_extended_generic_talent_mp_regen", "modifier/generic_talents/modifier_extended_generic_talents.lua", LUA_MODIFIER_MOTION_NONE )
+    LinkLuaModifier("modifier_extended_generic_talent_attack_range", "modifier/generic_talents/modifier_extended_generic_talents.lua", LUA_MODIFIER_MOTION_NONE )
+    LinkLuaModifier("modifier_extended_generic_talent_cast_range", "modifier/generic_talents/modifier_extended_generic_talents.lua", LUA_MODIFIER_MOTION_NONE )
+    LinkLuaModifier("modifier_extended_generic_talent_attack_life_steal", "modifier/generic_talents/modifier_extended_generic_talents.lua", LUA_MODIFIER_MOTION_NONE )
+    LinkLuaModifier("modifier_extended_generic_talent_spell_life_steal", "modifier/generic_talents/modifier_extended_generic_talents.lua", LUA_MODIFIER_MOTION_NONE )
+    LinkLuaModifier("modifier_extended_generic_talent_spell_power", "modifier/generic_talents/modifier_extended_generic_talents.lua", LUA_MODIFIER_MOTION_NONE )
+    LinkLuaModifier("modifier_extended_generic_talent_cd_reduction", "modifier/generic_talents/modifier_extended_generic_talents.lua", LUA_MODIFIER_MOTION_NONE )
+    LinkLuaModifier("modifier_extended_generic_talent_bonus_xp", "modifier/generic_talents/modifier_extended_generic_talents.lua", LUA_MODIFIER_MOTION_NONE )
+    LinkLuaModifier("modifier_extended_generic_talent_respawn_reduction", "modifier/generic_talents/modifier_extended_generic_talents.lua", LUA_MODIFIER_MOTION_NONE )
+
+	-- Invoker lua modifiers
+	LinkLuaModifier("modifier_extended_invoke_buff", "modifier/modifier_extended_invoke_buff.lua", LUA_MODIFIER_MOTION_NONE )
 
 	-- Silencer lua modifiers
 	LinkLuaModifier("modifier_extended_arcane_curse_debuff", "modifier/modifier_extended_arcane_curse_debuff.lua", LUA_MODIFIER_MOTION_NONE )
@@ -90,6 +118,25 @@ function Precache( context )
 	PrecacheResource("particle", "particles/units/heroes/hero_magnataur/magnataur_reverse_polarity.vpcf", context)
 	PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_magnataur.vsndevts", context)
 
+    -- Radiant Hulk (Behemoth)
+    PrecacheResource("particle", "particles/creeps/lane_creeps/creep_radiant_hulk_ambient.vpcf", context)
+    PrecacheResource("particle", "particles/creeps/lane_creeps/creep_radiant_hulk_ambient_energy.vpcf", context)
+    PrecacheResource("particle", "particles/creeps/lane_creeps/creep_radiant_hulk_ambient_flakes.vpcf", context)
+    PrecacheResource("particle", "particles/creeps/lane_creeps/creep_radiant_hulk_swipe.vpcf", context)
+    PrecacheResource("particle", "particles/creeps/lane_creeps/creep_radiant_hulk_swipe_glow.vpcf", context)
+    PrecacheResource("particle", "particles/creeps/lane_creeps/creep_radiant_hulk_swipe_left.vpcf", context)
+    PrecacheResource("particle", "particles/creeps/lane_creeps/creep_radiant_hulk_swipe_right.vpcf", context)    
+
+    -- Dire Hulk (Behemoth)
+    PrecacheResource("particle", "particles/creeps/lane_creeps/creep_dire_hulk_ambient_core.vpcf", context)
+    PrecacheResource("particle", "particles/creeps/lane_creeps/creep_dire_hulk_flames.vpcf", context)
+    PrecacheResource("particle", "particles/creeps/lane_creeps/creep_dire_hulk_rays.vpcf", context)
+    PrecacheResource("particle", "particles/creeps/lane_creeps/creep_dire_hulk_swipe.vpcf", context)
+    PrecacheResource("particle", "particles/creeps/lane_creeps/creep_dire_hulk_swipe_glow.vpcf", context)
+    PrecacheResource("particle", "particles/creeps/lane_creeps/creep_dire_hulk_swipe_left.vpcf", context)
+    PrecacheResource("particle", "particles/creeps/lane_creeps/creep_dire_hulk_swipe_right.vpcf", context)    
+
+
 	-- Stuff
 	PrecacheResource("particle_folder", "particles/hero", context)
 	PrecacheResource("particle_folder", "particles/ambient", context)
@@ -101,6 +148,7 @@ function Precache( context )
 	PrecacheResource("particle_folder", "particles/items3_fx", context)
 	PrecacheResource("particle_folder", "particles/creeps/lane_creeps/", context)
 	PrecacheResource("particle_folder", "particles/customgames/capturepoints/", context)
+	PrecacheResource("particle", "particles/range_indicator.vpcf", context)
 
 	-- Models can also be precached by folder or individually
 	PrecacheResource("model_folder", "models/development", context)

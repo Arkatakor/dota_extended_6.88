@@ -6,6 +6,8 @@
   	"game_options",
   	"arena_capture",
   	"player_table",
-    "gamerules"
+    "gamerules",
+    "shared_unit_control",
+    "extended_talent_manager"
   ]
 }

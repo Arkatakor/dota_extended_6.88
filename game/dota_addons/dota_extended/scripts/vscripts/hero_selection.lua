@@ -290,20 +290,35 @@ function HeroSelection:HeroSelect( event )
 		return nil
 	end
 
-	-- Check if this hero hasn't already been picked
-	if PlayerResource:GetTeam(event.PlayerID) == DOTA_TEAM_GOODGUYS then
-		for _, picked_hero in pairs(HeroSelection.radiantPicks) do
-			if event.HeroName == picked_hero then
-				return nil
-			end
-		end
-	else
-		for _, picked_hero in pairs(HeroSelection.direPicks) do
-			if event.HeroName == picked_hero then
-				return nil
-			end
-		end
-	end
+    if EXTENDED_HERO_PICK_RULE == 0 then
+        -- All Unique heroes
+        for _, picked_hero in pairs(HeroSelection.radiantPicks) do
+            if event.HeroName == picked_hero then
+                return nil
+            end
+        end
+        for _, picked_hero in pairs(HeroSelection.direPicks) do
+            if event.HeroName == picked_hero then
+                return nil
+            end
+        end
+    elseif EXTENDED_HERO_PICK_RULE == 1 then
+        -- Allow Team pick same hero
+        -- Check if this hero hasn't already been picked
+        if PlayerResource:GetTeam(event.PlayerID) == DOTA_TEAM_GOODGUYS then
+            for _, picked_hero in pairs(HeroSelection.radiantPicks) do
+                if event.HeroName == picked_hero then
+                    return nil
+                end
+            end
+        else
+            for _, picked_hero in pairs(HeroSelection.direPicks) do
+                if event.HeroName == picked_hero then
+                    return nil
+                end
+            end
+        end
+    end
 
 	-- If this player has not picked yet give him the hero
 	if not HeroSelection.playerPicks[ event.PlayerID ] then
@@ -422,14 +437,24 @@ function HeroSelection:AssignHero(player_id, hero_name)
 
 		-- Fetch wisp entity
 		local wisp = PlayerResource:GetSelectedHeroEntity(player_id)
-		wisp:SetRespawnsDisabled(true)
+		wisp:SetRespawnsDisabled(true)				
 
 		-- Switch for the new hero
 		PlayerResource:ReplaceHeroWith(player_id, hero_name, 0, 0 )
 		PlayerResource:SetCameraTarget(player_id, nil)
 
-		-- Nuke the wisp from orbit
-		UTIL_Remove(wisp)
+		wisp:Destroy()
+
+		-- If the wisp is still somehow alive, RENUKE
+	    Timers:CreateTimer(FrameTime(), function()
+	      	if not wisp:IsNull() then
+	      		print("in timer", wisp)
+		        UTIL_Remove(wisp)
+		        print("wisp removed again")
+		        return 1
+	      	end
+	    end)
+		
 
 		-------------------------------------------------------------------------------------------------
 		-- EXTENDED: First hero spawn initialization
@@ -483,16 +508,20 @@ function HeroSelection:AssignHero(player_id, hero_name)
 			ApplyAllRandomOmgAbilities(hero)
 		end
 
-		-- Apply frantic modifier, if appropriate
-		if EXTENDED_FRANTIC_MODE_ON then
-			hero:AddNewModifier(hero, nil, "modifier_extended_frantic", {})
-		end
-
 		-- Apply generic talents handler
 		hero:AddNewModifier(hero, nil, "modifier_extended_generic_talents_handler", {})
 
+		-- Apply War Veteran buff
+		hero:AddNewModifier(hero, nil, "modifier_extended_war_veteran", {})
+
 		-- Initialize innate hero abilities
 		InitializeInnateAbilities(hero)
+
+		-- Initialize Invoker's innate invoke buff
+		-- TODO: This should be removed when another solution is found, like giving Invoker a hidden passive ability to apply the modifier
+		if hero:HasAbility("invoker_invoke") then
+			hero:AddNewModifier(hero, hero:FindAbilityByName("invoker_invoke"), "modifier_extended_invoke_buff", {})
+		end
 
 		-- Set up player color
 		PlayerResource:SetCustomPlayerColor(player_id, PLAYER_COLORS[player_id][1], PLAYER_COLORS[player_id][2], PLAYER_COLORS[player_id][3])
@@ -500,6 +529,9 @@ function HeroSelection:AssignHero(player_id, hero_name)
 		-- Set initial spawn setup as having been done
 		PlayerResource:IncrementTeamPlayerCount(player_id)
 		CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(player_id), "picking_done", {})
+
+		-- This is from extended_talent_events.lua
+		PopulateHeroExtendedTalents(hero);
 	end, player_id)
 end
 

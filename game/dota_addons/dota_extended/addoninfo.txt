@@ -3,7 +3,7 @@
 	"addonSteamAppID"				"816"
 	"addontitle"					"Dota EXTENDED"
 	"addon_game_name"				"Dota EXTENDED"
-	"addonversion"					"6.88"
+	"addonversion"					"7.00"
 	"addontagline"					"EXTENDED"
 	"addonauthor"					"Firetoad and Hewdraw"
 	"addonSteamGroupName"			""
@@ -11,14 +11,11 @@
 	"addonContent_Campaign"			"0"
 	"addonDescription"				"A modified version of Dota, where everything is insanely powerful."
 
-	"maps"							"extended_standard extended_random_omg extended_custom extended_10v10 extended_arena"
-	"IsPlayable"					"1"
-	"extended_standard"
-	{
-		"MaxPlayers"				"10"
-	}
+	"maps"							"extended_standard extended_custom extended_10v10 extended_arena"
 
-	"extended_random_omg"
+	"IsPlayable"					"1"
+
+	"extended_standard"
 	{
 		"MaxPlayers"				"10"
 	}
@@ -35,6 +32,6 @@
 
 	"extended_arena"
 	{
-		"MaxPlayers"				"16"
+		"MaxPlayers"				"12"
 	}
 }
